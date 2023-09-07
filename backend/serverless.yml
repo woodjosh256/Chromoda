@@ -1,0 +1,33 @@
+service: chromoda
+
+provider:
+  name: aws
+  runtime: python3.10
+  region: us-east-1
+
+plugins:
+  - serverless-python-requirements
+  - serverless-functions-base-path
+
+custom:
+  pythonRequirements:
+    layer: true
+    dockerizePip: non-linux
+    slim: true
+  functionsBasePath: backend/lambdas/endpoints
+
+functions:
+  generateTopo:
+    handler: generate_topo.handler
+    events:
+      - http:
+          path: generateTopo
+          method: get
+          cors: true
+    timeout: 20
+
+package:
+  exclude:
+    - node_modules/**
+    - venv/**
+    - .venv/**
