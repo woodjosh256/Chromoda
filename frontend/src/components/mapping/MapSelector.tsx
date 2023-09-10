@@ -13,9 +13,14 @@ import {BAG_WIDTH, BAG_HEIGHT} from "../../constants";
 
 mapboxgl.accessToken = 'pk.eyJ1Ijoid29vZGpvc2gyNTYiLCJhIjoiY2w1enZ3enZ0MWRzbDNlcnQ2aHczbnpoeSJ9.ktUPmFvHckp8iworeuOvOA';
 
-export function MapSelector() {
-    const mapContainer = useRef(null);
+interface MapSelectorProps {
+    returnCoords: (top_left: [number, number], bottom_right: [number, number]) => void; // long, lat order
+}
+
+export function MapSelector(props: MapSelectorProps) {
+    const mapContainer = useRef<HTMLDivElement | null>(null);
     const map = useRef<mapboxgl.Map | null>(null);
+    const box = useRef<HTMLDivElement | null>(null);
 
     const starting_zoom: number = 2.5;
     const starting_lat: number = 39.78;
@@ -28,8 +33,8 @@ export function MapSelector() {
             style: 'mapbox://styles/mapbox/outdoors-v12',
             center: [starting_lng, starting_lat],
             zoom: starting_zoom,
-            projection: 'mercator',
             maxPitch: 0,
+            projection: 'mercator',
             attributionControl: false
         });
 
@@ -51,9 +56,19 @@ export function MapSelector() {
                 'maxzoom': 14
             });
             // add the DEM source as a terrain layer with exaggerated height
-            map.current.setTerrain({'source': 'mapbox-dem', 'exaggeration': 2});
+            map.current.setTerrain({'source': 'mapbox-dem', 'exaggeration': 1.3});
         });
     });
+
+    function returnCoords() {
+        if (!map.current || !box.current) return;
+        let topLeft = map.current.unproject([box.current.offsetLeft,
+            box.current.offsetTop]);
+        let bottomRight = map.current.unproject([box.current.offsetLeft + box.current.offsetWidth,
+            box.current.offsetTop + box.current.offsetHeight]);
+
+        props.returnCoords([topLeft.lng, topLeft.lat], [bottomRight.lng, bottomRight.lat]);
+    }
 
     return (
         <div className="relative h-screen w-screen">
@@ -62,12 +77,12 @@ export function MapSelector() {
             <div className="z-1 absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center pointer-events-none">
 
                 <div className="flex-grow flex w-9/12 md:w-1/3 items-center justify-center pointer-events-none">
-                    <div className={`w-full aspect-[${BAG_WIDTH.toString()}/${BAG_HEIGHT.toString()}] border-4 rounded-[100px] shadow-gray-800 shadow-2xl border-gray-800 `}/>
+                    <div ref={box} className={`w-full aspect-bag_ratio border-4 rounded-[3rem] shadow-gray-800 shadow-mega border-pink-600`}/>
                 </div>
 
                 <MaterialContainer className={"h-auto flex flex-col space-y-4 pointer-events-auto"}>
                     <p className="text-white text-center">Move map to select region to be printed on your fanny pack.</p>
-                    <SelectorButton handler={() => null}>SELECT</SelectorButton>
+                    <SelectorButton handler={returnCoords}>SELECT REGION</SelectorButton>
                 </MaterialContainer>
             </div>
         </div>
