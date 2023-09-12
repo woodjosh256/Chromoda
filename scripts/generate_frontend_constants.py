@@ -3,7 +3,7 @@ import json
 import re
 
 # Load constants from YAML file
-with open('./constants.yaml', 'r') as file:
+with open('./backend/constants.yaml', 'r') as file:
     constants = yaml.safe_load(file)
 
 # Convert constants to JSON

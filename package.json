@@ -11,5 +11,10 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "serverless-functions-base-path": "^1.0.33",
+    "serverless-plugin-git-variables": "^5.2.0",
+    "serverless-python-requirements": "^6.0.0"
+  }
 }

@@ -1,4 +1,4 @@
-service: chromoda
+service: chromoda-testing
 
 provider:
   name: aws
@@ -11,10 +11,10 @@ plugins:
 
 custom:
   pythonRequirements:
-    layer: true
-    dockerizePip: non-linux
-    slim: true
-  functionsBasePath: backend/lambdas/endpoints
+      dockerizePip: non-linux
+      zip: true
+      slim: true
+  functionsBasePath: lambdas
 
 functions:
   generateTopo:
@@ -27,7 +27,5 @@ functions:
     timeout: 20
 
 package:
-  exclude:
-    - node_modules/**
-    - venv/**
-    - .venv/**
+  patterns:
+    - '!/.serverless/**'

@@ -14,7 +14,7 @@ import {BAG_WIDTH, BAG_HEIGHT} from "../../constants";
 mapboxgl.accessToken = 'pk.eyJ1Ijoid29vZGpvc2gyNTYiLCJhIjoiY2w1enZ3enZ0MWRzbDNlcnQ2aHczbnpoeSJ9.ktUPmFvHckp8iworeuOvOA';
 
 interface MapSelectorProps {
-    returnCoords: (top_left: [number, number], bottom_right: [number, number]) => void; // long, lat order
+    returnCoords: (topLeft: [number, number], topRight: [number, number], bottomLeft: [number, number], bottomRight: [number, number]) => void; // long, lat order
 }
 
 export function MapSelector(props: MapSelectorProps) {
@@ -62,12 +62,18 @@ export function MapSelector(props: MapSelectorProps) {
 
     function returnCoords() {
         if (!map.current || !box.current) return;
-        let topLeft = map.current.unproject([box.current.offsetLeft,
-            box.current.offsetTop]);
-        let bottomRight = map.current.unproject([box.current.offsetLeft + box.current.offsetWidth,
-            box.current.offsetTop + box.current.offsetHeight]);
 
-        props.returnCoords([topLeft.lng, topLeft.lat], [bottomRight.lng, bottomRight.lat]);
+        let topLeft = map.current.unproject(
+            [box.current.offsetLeft,box.current.offsetTop]);
+        let topRight = map.current.unproject(
+            [box.current.offsetLeft + box.current.offsetWidth, box.current.offsetTop]);
+        let bottomLeft = map.current.unproject(
+            [box.current.offsetLeft, box.current.offsetTop + box.current.offsetHeight]);
+        let bottomRight = map.current.unproject(
+            [box.current.offsetLeft + box.current.offsetWidth, box.current.offsetTop + box.current.offsetHeight]);
+
+        props.returnCoords([topLeft.lng, topLeft.lat], [topRight.lng, topRight.lat],
+            [bottomLeft.lng, bottomLeft.lat], [bottomRight.lng, bottomRight.lat]);
     }
 
     return (
