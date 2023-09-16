@@ -15,6 +15,7 @@ mapboxgl.accessToken = 'pk.eyJ1Ijoid29vZGpvc2gyNTYiLCJhIjoiY2w1enZ3enZ0MWRzbDNlc
 
 interface MapSelectorProps {
     returnCoords: (topLeft: [number, number], topRight: [number, number], bottomLeft: [number, number], bottomRight: [number, number]) => void; // long, lat order
+    onload?: () => void;
 }
 
 export function MapSelector(props: MapSelectorProps) {
@@ -57,6 +58,8 @@ export function MapSelector(props: MapSelectorProps) {
             });
             // add the DEM source as a terrain layer with exaggerated height
             map.current.setTerrain({'source': 'mapbox-dem', 'exaggeration': 1.3});
+
+            if (props.onload) props.onload();
         });
     });
 
@@ -77,8 +80,8 @@ export function MapSelector(props: MapSelectorProps) {
     }
 
     return (
-        <div className="relative h-screen w-screen">
-            <div ref={mapContainer} className="z-0 absolute top-0 left-0 w-full h-full"/>
+        <div className="relative h-full w-full">
+            <div ref={mapContainer} className="z-0 w-full h-full"/>
             <Attribution className="absolute bottom-0 right-0 px-2 backdrop-blur backdrop-brightness-75"/>
             <div className="z-1 absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center pointer-events-none">
 

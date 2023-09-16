@@ -1,1 +1,1 @@
-export const BAG_WIDTH = 1050, BAG_HEIGHT = 700;
+export const BAG_WIDTH = 505, BAG_HEIGHT = 337;

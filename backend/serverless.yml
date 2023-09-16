@@ -4,6 +4,9 @@ provider:
   name: aws
   runtime: python3.10
   region: us-east-1
+  architecture: arm64
+
+useDotenv: true
 
 plugins:
   - serverless-python-requirements
@@ -24,6 +27,8 @@ functions:
           path: generateTopo
           method: get
           cors: true
+    environment:
+      MAPBOX_API_KEY: ${env:MAPBOX_API_KEY}
     timeout: 20
 
 package:

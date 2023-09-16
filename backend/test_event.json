@@ -1,0 +1,15 @@
+{
+    "httpMethod": "GET",
+    "queryStringParameters": {
+        "tl_lon": "-94.9213",
+        "tl_lat": "49.4823",
+        "tr_lon": "-73.7544",
+        "tr_lat": "49.4822",
+        "bl_lon": "-94.9214",
+        "bl_lat": "39.4275",
+        "br_lon": "-73.7545",
+        "br_lat": "39.4274",
+        "lines": "25",
+        "width": "100"
+    }
+}
