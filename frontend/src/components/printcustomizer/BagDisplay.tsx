@@ -125,9 +125,6 @@ export function BagDisplay(props: BagDisplayProps) {
 
     useEffect(() => {
         svg = parseSvg(props.svg);
-    }, [props.svg]);
-
-    useEffect(() => {
         generatePrint(svg, props.printOptions).then( (printImg: string) => {
             generateRender(printImg).then( (renderImg: string) => {
                 setPreviewImage(renderImg);
