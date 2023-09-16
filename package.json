@@ -13,8 +13,6 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/react-color": "^3.0.6",
-    "react-color": "^2.19.3",
     "serverless-functions-base-path": "^1.0.33",
     "serverless-plugin-git-variables": "^5.2.0",
     "serverless-python-requirements": "^6.0.0"
