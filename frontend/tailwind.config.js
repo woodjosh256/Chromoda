@@ -9,7 +9,7 @@ module.exports = {
         'xxs': '0.5rem',  // 8px
       },
       aspectRatio: {
-        'bag_ratio': '505 / 337',
+        'bag_ratio': '1434 / 954',
         // 'bag_ratio': '337 / 505'
       },
       boxShadow: {

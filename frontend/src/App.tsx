@@ -1,11 +1,15 @@
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {MapSelector} from "./components/mapping/MapSelector";
 import {PrintCustomizer} from "./components/printcustomizer/PrintCustomizer";
 import {BAG_WIDTH} from "./constants";
+import mapboxgl from "mapbox-gl";
+import {Console} from "inspector";
 
 export default function App() {
-    const [showPrintCustomizer, setShowPrintCustomizer] = useState(false);  // Step 1
-    const [svgData, setSvgData] = useState<string | null>(null);  // To store SVG data
+    const [svgData, setSvgData] = useState<string | null>(null);
+    const [showMap, setShowMap] = useState<boolean>(true);
+
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     function queryAPI(topLeft: [number, number], topRight: [number, number], bottomLeft: [number, number],  bottomRight: [number, number]): Promise<Response> {
         let params = {
@@ -17,7 +21,7 @@ export default function App() {
             "bl_lat": bottomLeft[1],
             "br_lon": bottomRight[0],
             "br_lat": bottomRight[1],
-            "width": BAG_WIDTH,
+            "width": Math.floor(BAG_WIDTH / 2),
             "lines": 25,
         }
 
@@ -47,19 +51,32 @@ export default function App() {
             });
     }
 
-    function showCustomization(topLeft: [number, number], topRight: [number, number], bottomLeft: [number, number],  bottomRight: [number, number]) {
+    async function showCustomization(topLeft: [number, number], topRight: [number, number], bottomLeft: [number, number],  bottomRight: [number, number]) {
+        setIsLoading(true);
         queryAPI(topLeft, topRight, bottomLeft, bottomRight)
             .then(response => response.json())
             .then(data => {
-                setSvgData(data["svg"])
-                setShowPrintCustomizer(true)
+                setSvgData(data["svg"]);
+                setIsLoading(false);
+                setShowMap(false);
             });
+    }
+
+    function showMapSelector() {
+        setShowMap(true);
     }
 
     return (
         <div className="h-screen w-screen flex flex-col">
             <div className="flex-grow">
-                {showPrintCustomizer && svgData ? <PrintCustomizer svg={svgData} /> : <MapSelector returnCoords={showCustomization} onload={warmupLambda}/>}
+                <MapSelector returnCoords={showCustomization}
+                             onload={warmupLambda}
+                             className={(showMap ? "block" : "hidden") + ""}
+                             isLoading={isLoading}
+                />
+                <PrintCustomizer svg={svgData}
+                                 exit={showMapSelector}
+                                 className={(showMap ? "hidden" : "block") + ""}/>
             </div>
         </div>
     );

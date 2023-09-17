@@ -1,4 +1,4 @@
-import React, {useRef, useEffect} from 'react';
+import React, {useRef, useEffect, useState} from 'react';
 
 import 'mapbox-gl/dist/mapbox-gl.css';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
@@ -16,6 +16,8 @@ mapboxgl.accessToken = 'pk.eyJ1Ijoid29vZGpvc2gyNTYiLCJhIjoiY2w1enZ3enZ0MWRzbDNlc
 interface MapSelectorProps {
     returnCoords: (topLeft: [number, number], topRight: [number, number], bottomLeft: [number, number], bottomRight: [number, number]) => void; // long, lat order
     onload?: () => void;
+    className?: string;
+    isLoading: boolean;
 }
 
 export function MapSelector(props: MapSelectorProps) {
@@ -61,7 +63,7 @@ export function MapSelector(props: MapSelectorProps) {
 
             if (props.onload) props.onload();
         });
-    });
+    }, []);
 
     function returnCoords() {
         if (!map.current || !box.current) return;
@@ -80,7 +82,7 @@ export function MapSelector(props: MapSelectorProps) {
     }
 
     return (
-        <div className="relative h-full w-full">
+        <div className={`relative h-full w-full ${props.className}`}>
             <div ref={mapContainer} className="z-0 w-full h-full"/>
             <Attribution className="absolute bottom-0 right-0 px-2 backdrop-blur backdrop-brightness-75"/>
             <div className="z-1 absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center pointer-events-none">
@@ -91,7 +93,7 @@ export function MapSelector(props: MapSelectorProps) {
 
                 <MaterialContainer className={"h-auto flex flex-col space-y-4 pointer-events-auto"}>
                     <p className="text-white text-center">Move map to select region to be printed on your fanny pack.</p>
-                    <SelectorButton handler={returnCoords}>SELECT REGION</SelectorButton>
+                    <SelectorButton className="max-w-96" handler={returnCoords} disabled={props.isLoading}>SELECT REGION</SelectorButton>
                 </MaterialContainer>
             </div>
         </div>

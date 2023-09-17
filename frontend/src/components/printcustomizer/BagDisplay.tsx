@@ -1,16 +1,19 @@
 import {useEffect, useState} from "react";
 import {BAG_HEIGHT, BAG_WIDTH} from "../../constants";
 
-const render_width = 505
-const render_height = 337
+// could adjust these to be smaller but same aspect ratio
+const render_width = BAG_WIDTH
+const render_height = BAG_HEIGHT
 
-interface PrintOptions {
+export interface PrintOptions {
     color_a: string;
     color_b: string;
+    gradient: boolean;
+    secondary: boolean;
 }
 
 interface BagDisplayProps {
-    svg: string;
+    svg: string | null;
     className?: string;
     printOptions: PrintOptions;
 }
@@ -25,7 +28,7 @@ function styleSvg(svgDoc: Document, printOptions: PrintOptions) {
     polylines.forEach(polyline => {
         const classAttr = polyline.getAttribute("class") || "";
 
-        if (classAttr.includes('secondary')) {
+        if (classAttr.includes('secondary') && printOptions.secondary) {
             polyline.setAttribute("stroke", printOptions.color_b);
         } else {
             polyline.setAttribute("stroke", printOptions.color_a);
@@ -34,7 +37,7 @@ function styleSvg(svgDoc: Document, printOptions: PrintOptions) {
 
 }
 
-async function svgToBitmap(svgDoc: Document, width: number, height: number): Promise<string> {
+async function svgToBitmap(svgDoc: Document, printOptions: PrintOptions, width: number, height: number): Promise<string> {
     // higher scaling means the generated image will be look better
     // (but will be the same size)
     let scalingFactor = 2;
@@ -54,6 +57,15 @@ async function svgToBitmap(svgDoc: Document, width: number, height: number): Pro
 
         img.onload = function() {
             ctx.drawImage(img, 0, 0, width * scalingFactor, height * scalingFactor);
+
+            if (printOptions.gradient && printOptions.secondary) {
+                ctx.globalCompositeOperation = "source-in";
+                const gradient = ctx.createLinearGradient(0, height * scalingFactor * .4, width * scalingFactor, height * scalingFactor * .6);
+                gradient.addColorStop(0, printOptions.color_a);
+                gradient.addColorStop(1, printOptions.color_b);
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, width * scalingFactor, height * scalingFactor);
+            }
 
             // Downscale if needed
             if (scalingFactor !== 1) {
@@ -78,16 +90,16 @@ async function svgToBitmap(svgDoc: Document, width: number, height: number): Pro
 
 async function generatePrint(svgDoc: Document, printOptions: PrintOptions): Promise<string> {
     styleSvg(svgDoc, printOptions);
-    return await svgToBitmap(svgDoc, render_width, render_height);
+    return await svgToBitmap(svgDoc, printOptions, render_width, render_height);
 }
 
-function generateRender(printImageStr: string): Promise<string> {
+function generateRender(printImageStr: string, printOptions: PrintOptions): Promise<string> {
     return new Promise((resolve, reject) => {
-        const imgWidth = 1080;
-        const imgHeight = 871
+        const imgWidth = 2796;
+        const imgHeight = 1182
 
-        const top = 304;
-        const left = 285;
+        const top = 149;
+        const left = 708;
         const width = BAG_WIDTH;
         const height = BAG_HEIGHT;
 
@@ -104,12 +116,12 @@ function generateRender(printImageStr: string): Promise<string> {
                 return;
             }
 
-            ctx.fillStyle = "#000000";
+            ctx.fillStyle = "#1f1f1f";
             ctx.fillRect(0, 0, imgWidth, imgHeight);
             ctx?.drawImage(printImage, left, top, width, height);
 
             const baseImg = new Image();
-            baseImg.src = "/BagOverlay.png";
+            baseImg.src = "/BagOverlay.webp";
             baseImg.onload = () => {
                 ctx?.drawImage(baseImg, 0, 0, imgWidth, imgHeight);
                 resolve(canvas.toDataURL("image/png"));
@@ -124,9 +136,10 @@ export function BagDisplay(props: BagDisplayProps) {
     let svg : Document;
 
     useEffect(() => {
+        if (!props.svg) return;
         svg = parseSvg(props.svg);
         generatePrint(svg, props.printOptions).then( (printImg: string) => {
-            generateRender(printImg).then( (renderImg: string) => {
+            generateRender(printImg, props.printOptions).then( (renderImg: string) => {
                 setPreviewImage(renderImg);
             });
         });
