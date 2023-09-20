@@ -5,6 +5,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      height: {
+        screen: ['100vh', '100dvh'],
+      },
       fontSize: {
         'xxs': '0.5rem',  // 8px
       },
