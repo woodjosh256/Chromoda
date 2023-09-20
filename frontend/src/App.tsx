@@ -1,15 +1,17 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {MapSelector} from "./components/mapping/MapSelector";
 import {PrintCustomizer} from "./components/printcustomizer/PrintCustomizer";
 import {BAG_WIDTH} from "./constants";
 import mapboxgl from "mapbox-gl";
 import {Console} from "inspector";
+import {PrintGenerator, PrintOptions} from "./utils/PrintGenerator";
 
 export default function App() {
     const [svgData, setSvgData] = useState<string | null>(null);
     const [showMap, setShowMap] = useState<boolean>(true);
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [printOptions, setPrintOptions] = useState<PrintOptions | null>(null);
 
     function queryAPI(topLeft: [number, number], topRight: [number, number], bottomLeft: [number, number],  bottomRight: [number, number]): Promise<Response> {
         let params = {
@@ -66,6 +68,15 @@ export default function App() {
         setShowMap(true);
     }
 
+    useEffect(() => {
+        setPrintOptions({
+            color_a: "#FFFFFF",
+            color_b: "#0000FF",
+            gradient: false,
+            secondary: true
+        })
+    }, []);
+
     return (
         <div className="h-screen w-screen flex flex-col">
             <div className="flex-grow">
@@ -74,9 +85,14 @@ export default function App() {
                              className={(showMap ? "block" : "hidden") + ""}
                              isLoading={isLoading}
                 />
-                <PrintCustomizer svg={svgData}
-                                 exit={showMapSelector}
-                                 className={(showMap ? "hidden" : "block") + ""}/>
+                {!showMap && svgData && printOptions ?
+                    <PrintCustomizer printGenerator={new PrintGenerator(svgData)}
+                                     printOptions={printOptions}
+                                     setPrintOptions={setPrintOptions}
+                                     exit={showMapSelector}
+                                     className={(showMap ? "hidden" : "block") + ""}/>
+                    : null
+                }
             </div>
         </div>
     );
