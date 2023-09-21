@@ -20,7 +20,7 @@ interface ColorSelectionProps {
 export function ColorSelection(props: ColorSelectionProps) {
 
     return (
-        <InnerContainer className="flex flex-col space-y-2 items-center">
+        <InnerContainer className={`flex flex-col space-y-2 items-center ${props.className}`}>
             <h3 className="text-white text-lg font-bold">Colors</h3>
 
             <div className="flex flex-col space-y-2 items-center">
@@ -43,7 +43,7 @@ export function ColorSelection(props: ColorSelectionProps) {
                     }
                 </div>
                 <div className="flex flex-row flex-wrap space-x-6 justify-between items-center">
-                    <Toggle label="Enable Secondary"
+                    <Toggle label="Secondary"
                             checked={props.secondary}
                             onChange={props.onSecondaryToggle}
                             className="mx-6 my-2"

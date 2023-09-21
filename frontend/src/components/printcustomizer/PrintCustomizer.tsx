@@ -7,6 +7,7 @@ import {LabeledColorPicker} from "../common/LabeledColorPicker";
 import {InnerContainer} from "../common/InnerContainer";
 import {ColorSelection} from "./ColorSection";
 import {PrintGenerator, PrintOptions} from "../../utils/PrintGenerator";
+import {LocationPicker} from "./LocationPicker";
 
 
 interface PrintCustomizerProps {
@@ -53,18 +54,22 @@ export function PrintCustomizer(props: PrintCustomizerProps) {
             </div>
             <MaterialContainer className="flex flex-col space-y-6 max-h-[65%]">
 
+                <div className="flex flex-row overflow-scroll w-full">
+                    <ColorSelection
+                        className={`flex-grow`}
+                        colorA={props.printOptions.color_a}
+                        colorB={props.printOptions.color_b}
+                        secondary={props.printOptions.secondary}
+                        gradient={props.printOptions.gradient}
+                        colors={colors}
+                        onColorAChange={onColorAChange}
+                        onColorBChange={onColorBChange}
+                        onSecondaryToggle={onSecondaryToggle}
+                        onGradientToggle={onGradientToggle}
+                    />
+                    <LocationPicker className={"flex-grow"}/>
 
-                <ColorSelection
-                    colorA={props.printOptions.color_a}
-                    colorB={props.printOptions.color_b}
-                    secondary={props.printOptions.secondary}
-                    gradient={props.printOptions.gradient}
-                    colors={colors}
-                    onColorAChange={onColorAChange}
-                    onColorBChange={onColorBChange}
-                    onSecondaryToggle={onSecondaryToggle}
-                    onGradientToggle={onGradientToggle}
-                />
+                </div>
                 <div className="flex flex-row space-x-6 justify-between">
                     <SelectorButton className="flex-grow" handler={done}>BACK</SelectorButton>
                     <SelectorButton className="flex-grow" disabled={true} handler={() => {}}>Confirm</SelectorButton>
