@@ -1,10 +1,9 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {MapSelector} from "./components/mapping/MapSelector";
 import {PrintCustomizer} from "./components/printcustomizer/PrintCustomizer";
 import {BAG_WIDTH} from "./constants";
-import mapboxgl from "mapbox-gl";
-import {Console} from "inspector";
 import {PrintGenerator, PrintOptions} from "./utils/PrintGenerator";
+import {IconTypes} from "./components/printcustomizer/LocationPicker";
 
 export default function App() {
     const [svgData, setSvgData] = useState<string | null>(null);
@@ -73,7 +72,9 @@ export default function App() {
             color_a: "#FFFFFF",
             color_b: "#0000FF",
             gradient: false,
-            secondary: true
+            secondary: true,
+            locationColor: "#FFFFFF",
+            locationIcon: IconTypes.Heart,
         })
     }, []);
 

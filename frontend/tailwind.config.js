@@ -17,7 +17,7 @@ module.exports = {
       },
       boxShadow: {
         'mega': '0 15px 60px -15px rgba(0, 0, 0, 0.5)',
-      }
+      },
     },
   },
   plugins: [],
