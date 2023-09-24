@@ -52,14 +52,14 @@ export function MapSelector(props: MapSelectorProps) {
 
         // this enables 3d terrain
         map.current.on('style.load', () => {
-            map.current.addSource('mapbox-dem', {
-                'type': 'raster-dem',
-                'url': 'mapbox://mapbox.mapbox-terrain-dem-v1',
-                'tileSize': 512,
-                'maxzoom': 14
-            });
+            // map.current.addSource('mapbox-dem', {
+            //     'type': 'raster-dem',
+            //     'url': 'mapbox://mapbox.mapbox-terrain-dem-v1',
+            //     'tileSize': 512,
+            //     'maxzoom': 14
+            // });
             // add the DEM source as a terrain layer with exaggerated height
-            map.current.setTerrain({'source': 'mapbox-dem', 'exaggeration': 1.3});
+            // map.current.setTerrain({'source': 'mapbox-dem', 'exaggeration': 1.3});
 
             if (props.onload) props.onload();
         });

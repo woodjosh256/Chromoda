@@ -4,6 +4,7 @@ import {PrintCustomizer} from "./components/printcustomizer/PrintCustomizer";
 import {BAG_WIDTH} from "./constants";
 import {PrintGenerator, PrintOptions} from "./utils/PrintGenerator";
 import {IconTypes} from "./components/printcustomizer/LocationPicker";
+import OrderDisplay from "./components/ordermanagment/OrderDisplay";
 
 export default function App() {
     const [svgData, setSvgData] = useState<string | null>(null);
@@ -12,7 +13,9 @@ export default function App() {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [printOptions, setPrintOptions] = useState<PrintOptions | null>(null);
 
-    function queryAPI(topLeft: [number, number], topRight: [number, number], bottomLeft: [number, number],  bottomRight: [number, number]): Promise<Response> {
+    const [beginCustomization, setBeginCustomization] = useState<boolean>(false);
+
+    function queryMapAPI(topLeft: [number, number], topRight: [number, number], bottomLeft: [number, number], bottomRight: [number, number]): Promise<Response> {
         let params = {
             "tl_lon": topLeft[0],
             "tl_lat": topLeft[1],
@@ -41,20 +44,24 @@ export default function App() {
     }
 
     function warmupLambda() {
-        queryAPI(
-            [-97.60781350198876,46.1554748320809],
-            [-80.01837084094592,54.21503671402186],
-            [-89.17330990661537,37.415187460042574],
-            [-71.58341534687632,46.75842653536185])
+        queryMapAPI(
+            [-97.60781350198876, 46.1554748320809],
+            [-80.01837084094592, 54.21503671402186],
+            [-89.17330990661537, 37.415187460042574],
+            [-71.58341534687632, 46.75842653536185])
             .then(response => response.json())
             .then(data => {
                 // console.log(data)
             });
     }
 
-    async function showCustomization(topLeft: [number, number], topRight: [number, number], bottomLeft: [number, number],  bottomRight: [number, number]) {
+    function finishOrderDisplay() {
+        setBeginCustomization(true);
+    }
+
+    async function showCustomization(topLeft: [number, number], topRight: [number, number], bottomLeft: [number, number], bottomRight: [number, number]) {
         setIsLoading(true);
-        queryAPI(topLeft, topRight, bottomLeft, bottomRight)
+        queryMapAPI(topLeft, topRight, bottomLeft, bottomRight)
             .then(response => response.json())
             .then(data => {
                 setSvgData(data["svg"]);
@@ -79,8 +86,9 @@ export default function App() {
     }, []);
 
     return (
-        <div className="h-screen w-screen flex flex-col">
-            <div className="flex-grow">
+        <div className="h-screen w-screen flex flex-col relative">
+            <OrderDisplay className={`z-40 ${beginCustomization ? "hidden" : ""}`} done={finishOrderDisplay}/>
+            <div className={`flex-grow`}>
                 <MapSelector returnCoords={showCustomization}
                              onload={warmupLambda}
                              className={(showMap ? "block" : "hidden") + ""}
