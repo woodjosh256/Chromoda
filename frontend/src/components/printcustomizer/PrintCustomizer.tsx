@@ -10,7 +10,7 @@ import {PrintGenerator, PrintOptions} from "../../utils/PrintGenerator";
 import {IconTypes, LocationPicker} from "./LocationPicker";
 import {Modal} from "../common/Modal";
 import {ConfirmLocation} from "./ConfirmLocation";
-import {getOrderID} from "../ordermanagment/OrderDisplay";
+import {getPrintId} from "../ordermanagment/OrderDisplay";
 
 export interface CoordsBounds {
     tl_lat: number;
@@ -33,7 +33,7 @@ interface PrintCustomizerProps {
 }
 
 async function confirmLocation(props: PrintCustomizerProps): Promise<boolean> {
-    let orderID = getOrderID();
+    let orderID = getPrintId();
     if (orderID === "") {
         return false;
     }
@@ -133,7 +133,7 @@ export function PrintCustomizer(props: PrintCustomizerProps) {
 
     let disabledClassName = locationPickerMode ? "opacity-10 pointer-events auto [&>*]:pointer-events-none" : "";
 
-    let orderId = getOrderID();
+    let orderId = getPrintId();
 
     return (
         <div className={`w-full h-full flex flex-col ${props.className}`}>

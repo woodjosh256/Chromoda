@@ -2,37 +2,35 @@ import React, {useEffect, useState} from "react";
 import {LoadingCircle} from "../common/LoadingCircle";
 import {BAG_WIDTH} from "../../constants";
 import {Modal} from "../common/Modal";
+import {SelectorButton} from "../common/SelectorButton";
 
 interface OrderDisplayProps {
     className?: string;
     done: () => void;
 }
 
-export const getOrderID = (): string => {
+export const getPrintId = (): string => {
     const path = window.location.pathname;
 
     return path.substring(path.lastIndexOf('/') + 1);
 };
 
 async function getOrderState() {
-    const orderId = getOrderID();
+    const printId = getPrintId();
 
-    if (orderId === "" || true) {
+    if (printId === "") {
         return "none";
     }
 
     let params = {
-        "order_id": orderId
+        "print_id": printId
     }
-
 
     let query: string = Object.keys(params).map((key) => {
         return encodeURIComponent(key) + '=' + encodeURIComponent(String((params as any)[key]))
     }).join('&');
 
-    let url = "https://v9d5jpgnsf.execute-api.us-east-1.amazonaws.com/dev/generateTopo" + "?" + query;
-
-    console.log(url);
+    let url = "https://v9d5jpgnsf.execute-api.us-east-1.amazonaws.com/dev/checkOrderState" + "?" + query;
 
     return fetch(url, {
         method: 'GET',
@@ -48,21 +46,27 @@ export default function OrderDisplay(props: OrderDisplayProps) {
 
     useEffect(() => {
         getOrderState().then(state => {
-            console.log(state);
             if (state === "none") {
                 setOrderState("none");
                 setLoaded(true);
+                return;
             }
-            // order ID can be invalid, none, open or closed
-            // invalid => Redirect to none
-            // none => This is a demo!
-            // closed => show bag and dont let them continue
-            // open => tell them they can customize and allow them to continue
-            let parsedOrderState = ""
-            if (parsedOrderState === "invalid") {
-                window.location.href = "https://www.acromoda.com/customizer-demo";
-            }
-            setOrderState(parsedOrderState);
+            let response = state.json();
+            response.then(data => {
+                console.log(data);
+                let parsedOrderState = data["state"];
+                // order ID can be invalid, none, open or closed
+                // invalid => Redirect to none
+                // none => This is a demo!
+                // closed => show bag and dont let them continue
+                // open => tell them they can customize and allow them to continue
+                if (parsedOrderState === "invalid") {
+                    window.location.href = "https://www.acromoda.com/customizer-demo";
+                } else {
+                    setOrderState(parsedOrderState);
+                    setLoaded(true);
+                }
+            })
         })
     }, []);
 
@@ -71,26 +75,28 @@ export default function OrderDisplay(props: OrderDisplayProps) {
             {loaded ?
                 <Modal>
                     {orderState == "none" ?
-                        <div>
+                        <div className={"flex flex-col space-y-4"}>
                             <p>This is a demo of our product customizer. You can test out designs, but will not be able
                                 to place an order without a unique link.</p>
-                            <button onClick={props.done}>OK</button>
+                            <div className={"flex flex-row justify-center items-center"}>
+                                <SelectorButton handler={props.done}>OK</SelectorButton>
+                            </div>
                         </div>
                         : orderState == "closed" ?
-                            <div>
+                            <div className={"flex flex-col space-y-4"}>
                                 <p>Your order has already been placed. Please contact us if you need to change
                                     anything.</p>
                             </div>
                             : orderState == "open" ?
-                                <div>
-                                    <p>Use this site to design your fanny pack. You can safely close this page if you
-                                        decide you don't want to customize your fanny pack until later.</p>
-                                    <button onClick={props.done}>GET STARTED</button>
+                                <div className={"flex flex-col space-y-4"}>
+                                    <p>This is the order form for your custom fanny pack. Here you can test out multiple
+                                        designs, then confirm your order.</p>
+                                    <div className={"flex flex-row justify-center items-center"}>
+                                        <SelectorButton handler={props.done}>GET STARTED</SelectorButton>
+                                    </div>
                                 </div>
                                 : <p>Something went wrong. Please refresh the page.</p>
                     }
-                    <p>my modal</p>
-                    <button onClick={props.done}>close</button>
                 </Modal>
                 : <LoadingCircle/>
             }

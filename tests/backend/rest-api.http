@@ -1,4 +1,10 @@
-GET https://v9d5jpgnsf.execute-api.us-east-1.amazonaws.com/dev/checkOrderState?print_id=125153
+GET https://v9d5jpgnsf.execute-api.us-east-1.amazonaws.com/dev/checkOrderState?
+    order_id=61829745123
+Accept: application/json
+
+###
+GET https://v9d5jpgnsf.execute-api.us-east-1.amazonaws.com/dev/checkOrderState?
+    print_id=125153
 Accept: application/json
 
 ###
