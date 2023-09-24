@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {MapSelector} from "./components/mapping/MapSelector";
-import {PrintCustomizer} from "./components/printcustomizer/PrintCustomizer";
+import {CoordsBounds, PrintCustomizer} from "./components/printcustomizer/PrintCustomizer";
 import {BAG_WIDTH} from "./constants";
 import {PrintGenerator, PrintOptions} from "./utils/PrintGenerator";
 import {IconTypes} from "./components/printcustomizer/LocationPicker";
@@ -8,6 +8,7 @@ import OrderDisplay from "./components/ordermanagment/OrderDisplay";
 
 export default function App() {
     const [svgData, setSvgData] = useState<string | null>(null);
+    const [boundingCoords, setBoundingCoords] = useState<CoordsBounds | null>(null);
     const [showMap, setShowMap] = useState<boolean>(true);
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -64,6 +65,16 @@ export default function App() {
         queryMapAPI(topLeft, topRight, bottomLeft, bottomRight)
             .then(response => response.json())
             .then(data => {
+                setBoundingCoords({
+                    tl_lat: topLeft[1],
+                    tl_lon: topLeft[0],
+                    tr_lat: topRight[1],
+                    tr_lon: topRight[0],
+                    bl_lat: bottomLeft[1],
+                    bl_lon: bottomLeft[0],
+                    br_lat: bottomRight[1],
+                    br_lon: bottomRight[0],
+                })
                 setSvgData(data["svg"]);
                 setIsLoading(false);
                 setShowMap(false);
@@ -99,6 +110,7 @@ export default function App() {
                                      printOptions={printOptions}
                                      setPrintOptions={setPrintOptions}
                                      exit={showMapSelector}
+                                     coordsbounds={boundingCoords!}
                                      className={(showMap ? "hidden" : "block") + ""}/>
                     : null
                 }

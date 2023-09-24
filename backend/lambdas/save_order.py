@@ -34,8 +34,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict:
         secondary = bool(query_params["secondary"])
         location_icon = str(query_params["locationIcon"])
         location_color = str(query_params["locationColor"])
-        location_x = Decimal(query_params["location_x"])
-        location_y = Decimal(query_params["location_y"])
+        location_x = Decimal(query_params["location_x"]) if query_params["location_x"] != "null" else None
+        location_y = Decimal(query_params["location_y"]) if query_params["location_y"] != "null" else None
     except Exception as e:
         print(e)
         return _400({"Error": f"Missing params.. {str(e)}"})

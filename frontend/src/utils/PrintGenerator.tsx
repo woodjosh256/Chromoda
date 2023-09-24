@@ -80,7 +80,6 @@ export class PrintGenerator {
             }
 
             const img = new Image(width * scalingFactor, height * scalingFactor);
-            console.log(this.svg.documentElement.outerHTML);
             img.src = 'data:image/svg+xml,' + encodeURIComponent(this.svg.documentElement.outerHTML);
 
             img.onload = function () {
@@ -111,7 +110,6 @@ export class PrintGenerator {
                 const svgElement = tempDiv.querySelector('svg');
                 if (!svgElement) return;
                 const svgString = new XMLSerializer().serializeToString(svgElement);
-                console.log(svgString);
                 const locImg = new Image();
                 locImg.src = `data:image/svg+xml,${encodeURIComponent(svgString)}`;
                 locImg.onload = () => {

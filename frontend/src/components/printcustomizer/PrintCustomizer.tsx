@@ -10,14 +10,73 @@ import {PrintGenerator, PrintOptions} from "../../utils/PrintGenerator";
 import {IconTypes, LocationPicker} from "./LocationPicker";
 import {Modal} from "../common/Modal";
 import {ConfirmLocation} from "./ConfirmLocation";
+import {getOrderID} from "../ordermanagment/OrderDisplay";
 
+export interface CoordsBounds {
+    tl_lat: number;
+    tl_lon: number;
+    tr_lat: number;
+    tr_lon: number;
+    bl_lat: number;
+    bl_lon: number;
+    br_lat: number;
+    br_lon: number;
+}
 
 interface PrintCustomizerProps {
     printGenerator: PrintGenerator;
     printOptions: PrintOptions;
     setPrintOptions: Dispatch<SetStateAction<PrintOptions | null>>;
     exit: Dispatch<SetStateAction<boolean>>;
+    coordsbounds: CoordsBounds;
     className?: string;
+}
+
+async function confirmLocation(props: PrintCustomizerProps): Promise<boolean> {
+    let orderID = getOrderID();
+    if (orderID === "") {
+        return false;
+    }
+
+    let params = {
+        "print_id": orderID,
+        "order_id": "n/a",
+        "tl_lon": props.coordsbounds.tl_lon,
+        "tl_lat": props.coordsbounds.tl_lat,
+        "tr_lon": props.coordsbounds.tr_lon,
+        "tr_lat": props.coordsbounds.tr_lat,
+        "bl_lon": props.coordsbounds.bl_lon,
+        "bl_lat": props.coordsbounds.bl_lat,
+        "br_lon": props.coordsbounds.br_lon,
+        "br_lat": props.coordsbounds.br_lat,
+        "color_a": props.printOptions.color_a,
+        "color_b": props.printOptions.color_b,
+        "gradient": props.printOptions.gradient,
+        "secondary": props.printOptions.secondary,
+        "locationIcon": props.printOptions.locationIcon,
+        "locationColor": props.printOptions.locationColor,
+        "location_x": props.printOptions.location ? props.printOptions.location[0] : null,
+        "location_y": props.printOptions.location ? props.printOptions.location[1] : null,
+    }
+
+    let query: string = Object.keys(params).map((key) => {
+        return encodeURIComponent(key) + '=' + encodeURIComponent(String((params as any)[key]))
+    }).join('&');
+
+    let url = "https://v9d5jpgnsf.execute-api.us-east-1.amazonaws.com/dev/saveOrder" + "?" + query;
+
+    let response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+
+    if (response.status === 200) {
+        return true;
+    }
+    console.log(response);
+    return false;
 }
 
 export function PrintCustomizer(props: PrintCustomizerProps) {
@@ -67,11 +126,6 @@ export function PrintCustomizer(props: PrintCustomizerProps) {
         }
     }
 
-    async function confirmLocation() {
-        // setDonePickingLocation(true);
-        return true;
-    }
-
 
     const colors = ['#FFFFFF', '#A0A0A0', '#FF6900', '#FCB900', '#7BDCB5', '#00D084',
         '#8ED1FC', '#0693E3', '#EB144C', '#F78DA7', '#9900EF', '#FF0000', '#00FF00', '#0000FF',
@@ -79,10 +133,12 @@ export function PrintCustomizer(props: PrintCustomizerProps) {
 
     let disabledClassName = locationPickerMode ? "opacity-10 pointer-events auto [&>*]:pointer-events-none" : "";
 
+    let orderId = getOrderID();
+
     return (
         <div className={`w-full h-full flex flex-col ${props.className}`}>
             {donePickingLocation ?
-                <ConfirmLocation locationConfirmed={confirmLocation} cancel={() => {
+                <ConfirmLocation locationConfirmed={() => {return confirmLocation(props)}} cancel={() => {
                     setDonePickingLocation(false)
                 }}/>
                 : null}
@@ -128,7 +184,7 @@ export function PrintCustomizer(props: PrintCustomizerProps) {
                     </div>
                     <div className="flex flex-row space-x-6 justify-between">
                         <SelectorButton className="flex-grow" handler={done}>BACK</SelectorButton>
-                        <SelectorButton className="flex-grow" disabled={false} handler={() => {
+                        <SelectorButton className="flex-grow" disabled={orderId === ""} handler={() => {
                             setDonePickingLocation(true);
                         }}>Confirm</SelectorButton>
                     </div>

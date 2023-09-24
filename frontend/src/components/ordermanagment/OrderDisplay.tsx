@@ -17,7 +17,7 @@ export const getOrderID = (): string => {
 async function getOrderState() {
     const orderId = getOrderID();
 
-    if (orderId === "") {
+    if (orderId === "" || true) {
         return "invalid";
     }
 
