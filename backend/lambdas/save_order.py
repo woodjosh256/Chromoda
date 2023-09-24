@@ -1,11 +1,11 @@
-from _decimal import Decimal
-
-from botocore.exceptions import ClientError
-
 try:
     import unzip_requirements
 except ImportError:
     pass
+
+from _decimal import Decimal
+
+from botocore.exceptions import ClientError
 
 from typing import Any, Dict
 import boto3

@@ -1,3 +1,7 @@
+GET https://v9d5jpgnsf.execute-api.us-east-1.amazonaws.com/dev/checkOrderState?print_id=125153
+Accept: application/json
+
+###
 POST https://v9d5jpgnsf.execute-api.us-east-1.amazonaws.com/dev/saveOrder?
     print_id=8012313&
     order_id=n%2Fa&

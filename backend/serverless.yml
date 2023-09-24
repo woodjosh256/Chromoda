@@ -11,6 +11,11 @@ provider:
         - dynamodb:GetItem
         - dynamodb:PutItem
       Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.tableName}"
+    - Effect: Allow
+      Action:
+        - dynamodb:PutItem
+        - dynamodb:GetItem
+      Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.availableOrdersTableName}"
 
 useDotenv: true
 
@@ -25,6 +30,7 @@ custom:
       slim: true
   functionsBasePath: lambdas
   tableName: orderTable
+  availableOrdersTableName: availablePrintsTable
 
 
 functions:
@@ -45,6 +51,13 @@ functions:
           path: saveOrder
           method: post
           cors: true
+  checkOrderState:
+    handler: check_order_state.handler
+    events:
+      - http:
+          path: checkOrderState
+          method: get
+          cors: true
 
 resources:
   Resources:
@@ -59,7 +72,17 @@ resources:
           - AttributeName: printId
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
-
+    AvailablePrintsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.availableOrdersTableName}
+        AttributeDefinitions:
+          - AttributeName: printId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: printId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
 
 package:
   patterns:
