@@ -8,7 +8,7 @@ interface OrderDisplayProps {
     done: () => void;
 }
 
-const getOrderID = (): string => {
+export const getOrderID = (): string => {
     const path = window.location.pathname;
 
     return path.substring(path.lastIndexOf('/') + 1);

@@ -8,6 +8,8 @@ import {InnerContainer} from "../common/InnerContainer";
 import {ColorSelection} from "./ColorSection";
 import {PrintGenerator, PrintOptions} from "../../utils/PrintGenerator";
 import {IconTypes, LocationPicker} from "./LocationPicker";
+import {Modal} from "../common/Modal";
+import {ConfirmLocation} from "./ConfirmLocation";
 
 
 interface PrintCustomizerProps {
@@ -20,6 +22,7 @@ interface PrintCustomizerProps {
 
 export function PrintCustomizer(props: PrintCustomizerProps) {
     const [locationPickerMode, setLocationPickerMode] = useState<boolean>(false);
+    const [donePickingLocation, setDonePickingLocation] = useState<boolean>(false);
     let firstClick = false;
 
     function done() {
@@ -64,6 +67,11 @@ export function PrintCustomizer(props: PrintCustomizerProps) {
         }
     }
 
+    async function confirmLocation() {
+        // setDonePickingLocation(true);
+        return true;
+    }
+
 
     const colors = ['#FFFFFF', '#A0A0A0', '#FF6900', '#FCB900', '#7BDCB5', '#00D084',
         '#8ED1FC', '#0693E3', '#EB144C', '#F78DA7', '#9900EF', '#FF0000', '#00FF00', '#0000FF',
@@ -73,6 +81,11 @@ export function PrintCustomizer(props: PrintCustomizerProps) {
 
     return (
         <div className={`w-full h-full flex flex-col ${props.className}`}>
+            {donePickingLocation ?
+                <ConfirmLocation locationConfirmed={confirmLocation} cancel={() => {
+                    setDonePickingLocation(false)
+                }}/>
+                : null}
             <div className="flex-grow flex justify-center items-center">
                 <BagDisplay
                     onClick={imageClicked}
@@ -107,13 +120,16 @@ export function PrintCustomizer(props: PrintCustomizerProps) {
                             setLocation={enterLocationPickerMode}
                             setColor={onLocationColorChange}
                             locationColor={props.printOptions.locationColor}
-                            clearLocation={() => {updatePrintOptions({location: undefined})}}
+                            clearLocation={() => {
+                                updatePrintOptions({location: undefined})
+                            }}
                         />
 
                     </div>
                     <div className="flex flex-row space-x-6 justify-between">
                         <SelectorButton className="flex-grow" handler={done}>BACK</SelectorButton>
-                        <SelectorButton className="flex-grow" disabled={true} handler={() => {
+                        <SelectorButton className="flex-grow" disabled={false} handler={() => {
+                            setDonePickingLocation(true);
                         }}>Confirm</SelectorButton>
                     </div>
                 </div>
