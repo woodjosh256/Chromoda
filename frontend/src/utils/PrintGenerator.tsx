@@ -39,11 +39,13 @@ export class PrintGenerator {
     private svg: Document;
 
     // could adjust these to be smaller but same aspect ratio
-    private render_width = BAG_WIDTH
-    private render_height = BAG_HEIGHT
+    private readonly render_width: number;
+    private readonly render_height: number;
 
-    constructor(svg: string) {
+    constructor(svg: string, render_width: number = BAG_WIDTH, render_height: number = BAG_HEIGHT) {
         this.svg = PrintGenerator.parseSvg(svg);
+        this.render_width = render_width;
+        this.render_height = render_height;
     }
 
     private static parseSvg(svg: string): Document {

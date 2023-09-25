@@ -58,6 +58,13 @@ functions:
           path: checkOrderState
           method: get
           cors: true
+  getOrder:
+    handler: get_order.handler
+    events:
+      - http:
+          path: getOrder
+          method: get
+          cors: true
 
 resources:
   Resources:

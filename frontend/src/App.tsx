@@ -5,6 +5,7 @@ import {BAG_WIDTH} from "./constants";
 import {PrintGenerator, PrintOptions} from "./utils/PrintGenerator";
 import {IconTypes} from "./components/printcustomizer/LocationPicker";
 import OrderDisplay from "./components/ordermanagment/OrderDisplay";
+import {InternalOrderPrinter} from "./utils/InternalOrderPrinter";
 
 export default function App() {
     const [svgData, setSvgData] = useState<string | null>(null);

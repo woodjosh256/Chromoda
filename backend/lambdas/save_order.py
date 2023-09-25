@@ -24,14 +24,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict:
         tl_lat = Decimal(query_params["tl_lat"])
         tr_lon = Decimal(query_params["tr_lon"])
         tr_lat = Decimal(query_params["tr_lat"])
-        bl_lon = Decimal(query_params["br_lon"])
+        bl_lon = Decimal(query_params["bl_lon"])
         bl_lat = Decimal(query_params["bl_lat"])
         br_lon = Decimal(query_params["br_lon"])
         br_lat = Decimal(query_params["br_lat"])
         color_a = query_params["color_a"]
         color_b = query_params["color_b"]
-        gradient = bool(query_params["gradient"])
-        secondary = bool(query_params["secondary"])
+        gradient = query_params["gradient"] == "true"
+        secondary = query_params["secondary"] == "true"
         location_icon = str(query_params["locationIcon"])
         location_color = str(query_params["locationColor"])
         location_x = Decimal(query_params["location_x"]) if query_params["location_x"] != "null" else None
