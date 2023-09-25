@@ -37,15 +37,17 @@ function MdPinF(props: { color: string }) {
 
 export class PrintGenerator {
     private svg: Document;
+    private scale: number;
 
     // could adjust these to be smaller but same aspect ratio
     private readonly render_width: number;
     private readonly render_height: number;
 
-    constructor(svg: string, render_width: number = BAG_WIDTH, render_height: number = BAG_HEIGHT) {
+    constructor(svg: string, scale=1) {
         this.svg = PrintGenerator.parseSvg(svg);
-        this.render_width = render_width;
-        this.render_height = render_height;
+        this.scale = scale;
+        this.render_width = BAG_WIDTH * scale
+        this.render_height = BAG_HEIGHT * scale;
     }
 
     private static parseSvg(svg: string): Document {
@@ -70,6 +72,7 @@ export class PrintGenerator {
         // higher scaling means the generated image will be look better
         // (but will be the same size)
         let scalingFactor = 2;
+        let iconScale = this.scale;
 
         return new Promise((resolve, reject) => {
             const canvas = document.createElement("canvas");
@@ -126,7 +129,7 @@ export class PrintGenerator {
 
                     if (printOptions.location) {
                         ctx.globalCompositeOperation = "source-over";
-                        const w = 100 * scalingFactor;
+                        const w = 100 * scalingFactor * iconScale
                         const h = w;
                         ctx.drawImage(locImg, printOptions.location[0] * canvas.width - w / 2,
                             printOptions.location[1] * canvas.height - h / 2, w, h);

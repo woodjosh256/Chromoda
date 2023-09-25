@@ -106,7 +106,7 @@ export const InternalOrderPrinter = () => {
                                     printOptions.location = [data.location_x, data.location_y];
                                 }
                                 console.log(printOptions);
-                                let printGenerator = new PrintGenerator(svg, BAG_WIDTH * 3, BAG_HEIGHT * 3);
+                                let printGenerator = new PrintGenerator(svg, 3);
                                 printGenerator.generatePrint(printOptions).then(print => overlayWithBlackBackground(print))
                                     .then(print => {
                                         if (myImg.current) {
