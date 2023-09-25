@@ -100,7 +100,7 @@ export const InternalOrderPrinter = () => {
                                     secondary: data.secondary,
                                     gradient: data.gradient,
                                     locationColor: data.locationColor,
-                                    locationIcon: data.locationIcon,
+                                    locationIcon: Number(data.locationIcon),
                                 }
                                 if (data.location_x && data.location_y) {
                                     printOptions.location = [data.location_x, data.location_y];
