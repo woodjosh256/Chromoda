@@ -12,8 +12,8 @@ from .common.api_responses import _400, _200
 
 def handler(event: Dict[str, Any], context: Any) -> Dict:
     dynamodb = boto3.resource('dynamodb')
-    available_prints_table = dynamodb.Table('availablePrintsTable')
-    print_orders_table = dynamodb.Table('orderTable')
+    available_prints_table = dynamodb.Table('availablePrintsTable-production')
+    print_orders_table = dynamodb.Table('orderTable-production')
 
     query_params = event["queryStringParameters"]
     try:

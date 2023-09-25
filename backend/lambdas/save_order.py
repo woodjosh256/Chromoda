@@ -14,7 +14,7 @@ from .common.api_responses import _200, _400, _500
 
 def handler(event: Dict[str, Any], context: Any) -> Dict:
     dynamodb = boto3.resource('dynamodb')
-    table = dynamodb.Table('orderTable')
+    table = dynamodb.Table('orderTable-production')
 
     query_params = event["queryStringParameters"]
     try:

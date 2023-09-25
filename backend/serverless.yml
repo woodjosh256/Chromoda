@@ -1,4 +1,4 @@
-service: chromoda-testing
+service: chromoda-production
 
 provider:
   name: aws
@@ -71,7 +71,7 @@ resources:
     DynamoDbTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: ${self:custom.tableName}
+        TableName: ${self:custom.tableName}-production
         AttributeDefinitions:
           - AttributeName: printId
             AttributeType: S
@@ -82,7 +82,7 @@ resources:
     AvailablePrintsTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: ${self:custom.availableOrdersTableName}
+        TableName: ${self:custom.availableOrdersTableName}-production
         AttributeDefinitions:
           - AttributeName: printId
             AttributeType: S

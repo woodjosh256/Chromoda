@@ -30,7 +30,7 @@ async function getOrderState() {
         return encodeURIComponent(key) + '=' + encodeURIComponent(String((params as any)[key]))
     }).join('&');
 
-    let url = "https://v9d5jpgnsf.execute-api.us-east-1.amazonaws.com/dev/checkOrderState" + "?" + query;
+    let url = "https://vj00e2kyw2.execute-api.us-east-1.amazonaws.com/dev/checkOrderState" + "?" + query;
 
     return fetch(url, {
         method: 'GET',

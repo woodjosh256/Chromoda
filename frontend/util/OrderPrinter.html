@@ -26,7 +26,7 @@
             return;
         }
 
-        let order_details = fetch("https://v9d5jpgnsf.execute-api.us-east-1.amazonaws.com/dev/getOrder?print_id=" + order_id)
+        let order_details = fetch("https://vj00e2kyw2.execute-api.us-east-1.amazonaws.com/dev/getOrder?print_id=" + order_id)
             .then(response => response.json())
             .then(data => {
                 return data;

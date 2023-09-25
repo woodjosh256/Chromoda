@@ -24,7 +24,7 @@ export const InternalOrderPrinter = () => {
             return encodeURIComponent(key) + '=' + encodeURIComponent(String((params as any)[key]))
         }).join('&');
 
-        let url = "https://v9d5jpgnsf.execute-api.us-east-1.amazonaws.com/dev/generateTopo" + "?" + query;
+        let url = "https://vj00e2kyw2.execute-api.us-east-1.amazonaws.com/dev/generateTopo" + "?" + query;
 
         return fetch(url, {
             method: 'GET',
@@ -82,7 +82,7 @@ export const InternalOrderPrinter = () => {
         if (print_input.current && print_input.current.value !== '') {
             console.log("Requesting print " + print_input.current.value + "...");
             let print_id = print_input.current.value;
-            fetch("https://v9d5jpgnsf.execute-api.us-east-1.amazonaws.com/dev/getOrder?print_id=" + print_id)
+            fetch("https://vj00e2kyw2.execute-api.us-east-1.amazonaws.com/dev/getOrder?print_id=" + print_id)
                 .then(response => response.json())
                 .then(data => {
                         console.log(data);

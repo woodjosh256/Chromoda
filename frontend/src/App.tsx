@@ -6,6 +6,8 @@ import {PrintGenerator, PrintOptions} from "./utils/PrintGenerator";
 import {IconTypes} from "./components/printcustomizer/LocationPicker";
 import OrderDisplay from "./components/ordermanagment/OrderDisplay";
 import {InternalOrderPrinter} from "./utils/InternalOrderPrinter";
+import {LoadingCircle} from "./components/common/LoadingCircle";
+import {Modal} from "./components/common/Modal";
 
 export default function App() {
     const [svgData, setSvgData] = useState<string | null>(null);
@@ -35,7 +37,7 @@ export default function App() {
             return encodeURIComponent(key) + '=' + encodeURIComponent(String((params as any)[key]))
         }).join('&');
 
-        let url = "https://v9d5jpgnsf.execute-api.us-east-1.amazonaws.com/dev/generateTopo" + "?" + query;
+        let url = "https://vj00e2kyw2.execute-api.us-east-1.amazonaws.com/dev/generateTopo" + "?" + query;
 
         return fetch(url, {
             method: 'GET',
@@ -100,6 +102,11 @@ export default function App() {
     return (
         <div className="h-screen w-screen flex flex-col relative">
             <OrderDisplay className={`z-40 ${beginCustomization ? "hidden" : ""}`} done={finishOrderDisplay}/>
+            {isLoading ?
+                <Modal>
+                    <LoadingCircle/>
+                </Modal>
+                : null}
             <div className={`flex-grow`}>
                 <MapSelector returnCoords={showCustomization}
                              onload={warmupLambda}
