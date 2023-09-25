@@ -99,23 +99,7 @@ export default function App() {
 
     return (
         <div className="h-screen w-screen flex flex-col relative">
-            <OrderDisplay className={`z-40 ${beginCustomization ? "hidden" : ""}`} done={finishOrderDisplay}/>
-            <div className={`flex-grow`}>
-                <MapSelector returnCoords={showCustomization}
-                             onload={warmupLambda}
-                             className={(showMap ? "block" : "hidden") + ""}
-                             isLoading={isLoading}
-                />
-                {!showMap && svgData && printOptions ?
-                    <PrintCustomizer printGenerator={new PrintGenerator(svgData)}
-                                     printOptions={printOptions}
-                                     setPrintOptions={setPrintOptions}
-                                     exit={showMapSelector}
-                                     coordsbounds={boundingCoords!}
-                                     className={(showMap ? "hidden" : "block") + ""}/>
-                    : null
-                }
-            </div>
+            <InternalOrderPrinter/>
         </div>
     );
 }
