@@ -29,8 +29,8 @@ custom:
       zip: true
       slim: true
   functionsBasePath: lambdas
-  tableName: orderTable
-  availableOrdersTableName: availablePrintsTable
+  tableName: orderTable-production
+  availableOrdersTableName: availablePrintsTable-production
 
 
 functions:
@@ -71,7 +71,7 @@ resources:
     DynamoDbTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: ${self:custom.tableName}-production
+        TableName: ${self:custom.tableName}
         AttributeDefinitions:
           - AttributeName: printId
             AttributeType: S
@@ -82,7 +82,7 @@ resources:
     AvailablePrintsTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: ${self:custom.availableOrdersTableName}-production
+        TableName: ${self:custom.availableOrdersTableName}
         AttributeDefinitions:
           - AttributeName: printId
             AttributeType: S

@@ -1,3 +1,7 @@
+GET https://vj00e2kyw2.execute-api.us-east-1.amazonaws.com/dev/checkOrderState?print_id=1
+Accept: application/json
+
+###
 GET https://vj00e2kyw2.execute-api.us-east-1.amazonaws.com/dev/checkOrderState?
     order_id=61829745123
 Accept: application/json
