@@ -60,7 +60,7 @@ export const InternalOrderPrinter = () => {
                 canvas.height = img.height;
 
                 // Step 3: Draw a black background
-                ctx.fillStyle = 'black';
+                ctx.fillStyle = 'orange'; // here
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
                 // Step 4: Draw the original image over the black background
@@ -95,9 +95,11 @@ export const InternalOrderPrinter = () => {
                                 console.log(query_data)
                                 let svg = query_data["svg"];
                                 let printOptions: PrintOptions = {
-                                    color_a: data.color_a,
+                                    // color_a: data.color_a,
+                                    color_a: 'black',
                                     color_b: data.color_b,
-                                    secondary: data.secondary,
+                                    // secondary: data.secondary,
+                                    secondary: false,
                                     gradient: data.gradient,
                                     locationColor: data.locationColor,
                                     locationIcon: Number(data.locationIcon),
