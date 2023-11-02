@@ -19,6 +19,7 @@ PyWavelets==1.4.1
 scikit-image==0.21.0
 scipy==1.11.2
 shapely==2.0.1
+simplejson==3.19.2
 svgwrite==1.4.3
 tifffile==2023.8.30
 yarl==1.9.2

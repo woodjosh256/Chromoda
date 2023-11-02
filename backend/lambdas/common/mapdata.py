@@ -105,8 +105,12 @@ class MapData:
                                       col: int):
         async with session.get(url) as response:
             tile_data = await response.read()
-
-            tile_img = Image.open(BytesIO(tile_data))
+            try:
+                tile_img = Image.open(BytesIO(tile_data))
+            except Exception as e:
+                # create a 512x512 image at sea level if the tile doesn't exist
+                tile_img = Image.new('RGB', (512, 512), (1, 134, 160))
+            
             tile_array = np.asarray(tile_img)
 
             r = tile_array[:, :, 0].astype(np.int32)
