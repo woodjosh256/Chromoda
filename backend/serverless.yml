@@ -1,4 +1,4 @@
-service: chromoda-production
+service: chromoda-production-flask
 
 provider:
   name: aws
