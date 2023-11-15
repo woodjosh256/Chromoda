@@ -1,18 +1,25 @@
 
 // noinspection JSUnusedGlobalSymbols
-import {requestTile, Tile} from "../lib/MapboxClient";
+import {requestTile, requestTileRegion, Tile} from "../lib/MapboxClient";
 import {response200} from "../lib/responses";
 
 export async function handler() {
-    const myTile: Tile = {
+    const tlTile: Tile = {
         x: 3826,
-        y: 6127
+        y: 6127,
+        zoom: 14
     };
-    const zoomLevel = 14;
-    const tile = await requestTile(zoomLevel, myTile);
 
-    // const tile = "asdf";
-    console.log(tile);
+    const brTile: Tile = {
+        x: 3828,
+        y: 6129,
+        zoom: 14
+    };
+
+    const tile = await requestTileRegion(tlTile, brTile);
+
+    let a = "asdf";
+    // console.log(tile);
 
     return response200({
         tile: tile
