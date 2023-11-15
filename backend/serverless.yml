@@ -1,0 +1,28 @@
+service: chromoda-js
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: us-east-1
+  architecture: arm64
+
+plugins:
+  - serverless-offline
+  - serverless-esbuild
+
+useDotenv: true
+
+functions:
+  generateTopo:
+    handler: src/functions/generateTopo.handler
+    environment:
+      MAPBOX_API_KEY: ${env:MAPBOX_API_KEY}
+    events:
+      - httpApi:
+          path: /generateTopo
+          method: get
+
+custom:
+  esbuild:
+    bundle: true
+    minify: true
