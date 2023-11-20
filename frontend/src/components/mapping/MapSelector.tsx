@@ -77,6 +77,13 @@ export function MapSelector(props: MapSelectorProps) {
         let bottomRight = map.current.unproject(
             [box.current.offsetLeft + box.current.offsetWidth, box.current.offsetTop + box.current.offsetHeight]);
 
+        // console.log(`topLeft: ${topLeft.lng}, ${topLeft.lat}`)
+        // console.log(`topRight: ${topRight.lng}, ${topRight.lat}`)
+        // console.log(`bottomLeft: ${bottomLeft.lng}, ${bottomLeft.lat}`)
+        // console.log(`bottomRight: ${bottomRight.lng}, ${bottomRight.lat}`)
+
+        console.log(`topLeft: ${topLeft.lng}, ${topLeft.lat}\ntopRight: ${topRight.lng}, ${topRight.lat}\nbottomLeft: ${bottomLeft.lng}, ${bottomLeft.lat}\nbottomRight: ${bottomRight.lng}, ${bottomRight.lat}`);
+
         props.returnCoords([topLeft.lng, topLeft.lat], [topRight.lng, topRight.lat],
             [bottomLeft.lng, bottomLeft.lat], [bottomRight.lng, bottomRight.lat]);
     }

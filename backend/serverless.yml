@@ -1,4 +1,4 @@
-service: chromoda-production
+service: chromoda-drybag-dev
 
 provider:
   name: aws
@@ -29,8 +29,8 @@ custom:
       zip: true
       slim: true
   functionsBasePath: lambdas
-  tableName: orderTable-production
-  availableOrdersTableName: availablePrintsTable-production
+  tableName: drybagOrders-production
+  availableOrdersTableName: availableDrybagOrders-production
 
 
 functions:

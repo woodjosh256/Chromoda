@@ -37,7 +37,7 @@ def int16_array_to_image(img_array: np.ndarray) -> Image.Image:
 class MapData:
     tile_size = 512
 
-    def __init__(self, api_key: str = os.environ.get('MAPBOX_API_KEY')):
+    def __init__(self, api_key: str = "pk.eyJ1Ijoid29vZGpvc2gyNTYiLCJhIjoiY2xvd2ZkOHJ4MTB0ZzJpbno2MXRpNzVkZiJ9.J_lAMc__Z5Vej38i0KQwtw"):
         self.api_key = api_key
 
     @classmethod
@@ -109,8 +109,9 @@ class MapData:
                 tile_img = Image.open(BytesIO(tile_data))
             except Exception as e:
                 # create a 512x512 image at sea level if the tile doesn't exist
+                print('error', e)
                 tile_img = Image.new('RGB', (512, 512), (1, 134, 160))
-            
+
             tile_array = np.asarray(tile_img)
 
             r = tile_array[:, :, 0].astype(np.int32)
@@ -163,7 +164,6 @@ class MapData:
         stitched_img = np.ndarray(shape=(self.tile_size * rows_of_tiles,
                                          self.tile_size * columns_of_tiles),
                                   dtype=np.int16)
-
 
         loop.run_until_complete(
             self.__fetch_all_tiles(tiles, columns_of_tiles, stitched_img))
@@ -265,6 +265,7 @@ class MapData:
                                         class_=f"e{str(level)}{' secondary' if idx % secondary_interval == 0 else ''}")
 
                 dwg.add(polyline)
+                dwg.save()
         return dwg
 
     def get_contours(self, tl: Coord, tr: Coord, bl: Coord, br: Coord,
@@ -276,14 +277,13 @@ class MapData:
 
 
 # md = MapData()
-# img = md.generate_heightmap(Coord(lon=-89.34883192641215, lat=50.0951048226766),
-#                             Coord(lon=-78.3904492620223, lat=45.97213875665682),
-#                             Coord(lon=-93.4624638362534, lat=45.1775102491446),
-#                             Coord(lon=-82.50387485431594,
-#                                   lat=40.66205642956018),
-#                             400)
-# img.show()
-
+# img = md.get_contours(Coord(lon=-88.34883192641215, lat=50.0951048226766),
+#                       Coord(lon=-78.3904492620223, lat=45.97213875665682),
+#                       Coord(lon=-93.4624638362534, lat=45.1775102491446),
+#                       Coord(lon=-82.50387485431594,
+#                             lat=40.66205642956018),
+#                       400, 25)
+# print(img.tostring())
 # Top Left: -96.40530502960567,53.87062368349805
 # Top Right: -70.8922224835333,49.72233935110722
 # Bottom Left: -100.88818369291192,42.58415473432717
@@ -323,4 +323,19 @@ class MapData:
 #     1000,
 #     25)
 # print(svg.tostring())
+# svg.save()
+
+# topLeft: -121.35833689706175, 63.59594534083061
+# topRight: -75.74166310293761, 63.59594534083061
+# bottomLeft: -121.35833689706175, 23.35921078581252
+# bottomRight: -75.74166310293761, 23.35921078581252
+
+# md = MapData()
+# svg = md.get_contours(
+#     Coord(lon=-121.35833689706175, lat=63.59594534083061),
+#     Coord(lon=-75.74166310293761, lat=63.59594534083061),
+#     Coord(lon=-121.35833689706175, lat=23.35921078581252),
+#     Coord(lon=-75.74166310293761, lat=23.35921078581252),
+#     1000,
+#     25)
 # svg.save()
