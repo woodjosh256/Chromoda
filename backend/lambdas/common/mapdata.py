@@ -265,7 +265,6 @@ class MapData:
                                         class_=f"e{str(level)}{' secondary' if idx % secondary_interval == 0 else ''}")
 
                 dwg.add(polyline)
-                dwg.save()
         return dwg
 
     def get_contours(self, tl: Coord, tr: Coord, bl: Coord, br: Coord,

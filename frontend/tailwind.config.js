@@ -14,7 +14,7 @@ module.exports = {
       aspectRatio: {
         // 'bag_ratio': '1434 / 954',
         // 'bag_ratio': '337 / 505'
-        'bag_ratio': '850 / 1100'
+        'bag_ratio': '80 / 105'
       },
       boxShadow: {
         'mega': '0 15px 60px -15px rgba(0, 0, 0, 0.5)',
