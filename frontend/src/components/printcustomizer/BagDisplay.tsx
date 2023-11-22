@@ -36,7 +36,7 @@ function generateRender(frontImgStr: string, backImgStr: string): Promise<string
             ctx.fillStyle = "black";
             ctx?.fillRect(0, 0, canvas.width, canvas.height)
 
-            ctx?.drawImage(frontImg, 282, 0, 1100, 1100/ 850 * 1100);
+            ctx?.drawImage(frontImg, 240, 0, 1100, 1100/ 850 * 1100);
 
             const baseImg = new Image();
             baseImg.src = "/ditty bag outer image.png";

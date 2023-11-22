@@ -169,7 +169,7 @@ export class PrintGenerator {
             ctx.globalCompositeOperation = "source-over";
             ctx.textAlign = "center";
             ctx.fillStyle = "white";
-            ctx.font = `bold ${text_size}px Palatino`;
+            ctx.font = `${text_size}px Courier`;
             ctx.fillText(coords.toUpperCase(), x, y);
         }
 

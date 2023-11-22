@@ -182,8 +182,7 @@ export function PrintCustomizer(props: PrintCustomizerProps) {
                                     }}
                             />
                         </div>
-
-
+                        <p className={'w-full text-center text-white'}>Note: colors won't be quite as bright when printed.</p>
                     </div>
 
                     <div className="flex flex-row space-x-6 justify-between">
