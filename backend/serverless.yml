@@ -65,6 +65,13 @@ functions:
           path: getOrder
           method: get
           cors: true
+  newOrderRandom:
+    handler: new_order_random.handler
+    events:
+      - http:
+          path: newOrderRandom
+          method: post
+          cors: true
 
 resources:
   Resources:
