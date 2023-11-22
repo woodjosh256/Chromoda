@@ -137,7 +137,7 @@ export function PrintCustomizer(props: PrintCustomizerProps) {
                 <BagDisplay
                     printGenerator={props.printGenerator}
                     printOptions={props.printOptions}
-                    className="max-h-96 max-w-96"/>
+                    className="w-auto max-h-[60vh]"/>
             </div>
             <MaterialContainer className={`max-h-[65%] relative`}>
                 <div className={`flex flex-col space-y-6 justify-around`}>

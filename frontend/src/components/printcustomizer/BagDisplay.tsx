@@ -21,8 +21,8 @@ function generateRender(frontImgStr: string, backImgStr: string): Promise<string
 
 
         const canvas = document.createElement("canvas");
-        canvas.width = imgWidth;
-        canvas.height = imgHeight;
+        canvas.width = 1500;
+        canvas.height = 1556;
         const ctx = canvas.getContext("2d");
         const frontImg = new Image()
         frontImg.src = frontImgStr;
@@ -33,8 +33,18 @@ function generateRender(frontImgStr: string, backImgStr: string): Promise<string
                 return;
             }
 
-            ctx?.drawImage(frontImg, 0, 0, BAG_WIDTH, BAG_HEIGHT);
-            resolve(canvas.toDataURL("image/png"));
+            ctx.fillStyle = "black";
+            ctx?.fillRect(0, 0, canvas.width, canvas.height)
+
+            ctx?.drawImage(frontImg, 282, 0, 1100, 1100/ 850 * 1100);
+
+            const baseImg = new Image();
+            baseImg.src = "/ditty bag outer image.png";
+            baseImg.onload = () => {
+                ctx?.drawImage(baseImg, 0, 0, canvas.width, canvas.height);
+                resolve(canvas.toDataURL("image/png"));
+            };
+
 
             // ctx?.drawImage(frontImg, 100, 100, BAG_WIDTH, BAG_HEIGHT);
             // ctx.textAlign = "center";
