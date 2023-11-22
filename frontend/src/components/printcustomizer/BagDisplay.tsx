@@ -2,22 +2,21 @@ import {useEffect, useState} from "react";
 import {BAG_HEIGHT, BAG_WIDTH} from "../../constants";
 import {PrintGenerator, PrintOptions} from "../../utils/PrintGenerator";
 
-const imgWidth = 2796;
-const imgHeight = 1182
+const imgWidth = BAG_WIDTH;
+const imgHeight = BAG_HEIGHT;
 
-const top = 149;
-const left = 708;
-const width = BAG_WIDTH;
-const height = BAG_HEIGHT;
+const top = 0;
+const left = 0;
+const width = imgWidth;
+const height = imgHeight;
 
 interface BagDisplayProps {
     className?: string;
     printGenerator: PrintGenerator;
     printOptions: PrintOptions;
-    onClick: (x: number, y: number) => void;
 }
 
-function generateRender(printImageStr: string): Promise<string> {
+function generateRender(frontImgStr: string, backImgStr: string): Promise<string> {
     return new Promise((resolve, reject) => {
 
 
@@ -25,25 +24,32 @@ function generateRender(printImageStr: string): Promise<string> {
         canvas.width = imgWidth;
         canvas.height = imgHeight;
         const ctx = canvas.getContext("2d");
-        const printImage = new Image()
-        printImage.src = printImageStr;
+        const frontImg = new Image()
+        frontImg.src = frontImgStr;
 
-        printImage.onload = () => {
+        frontImg.onload = () => {
             if (!ctx) {
                 reject("Failed to get canvas context");
                 return;
             }
 
-            ctx.fillStyle = "#1f1f1f";
-            ctx.fillRect(0, 0, imgWidth, imgHeight);
-            ctx?.drawImage(printImage, left, top, width, height);
+            ctx?.drawImage(frontImg, 0, 0, BAG_WIDTH, BAG_HEIGHT);
+            resolve(canvas.toDataURL("image/png"));
 
-            const baseImg = new Image();
-            baseImg.src = "/BagOverlay.webp";
-            baseImg.onload = () => {
-                ctx?.drawImage(baseImg, 0, 0, imgWidth, imgHeight);
-                resolve(canvas.toDataURL("image/png"));
-            }
+            // ctx?.drawImage(frontImg, 100, 100, BAG_WIDTH, BAG_HEIGHT);
+            // ctx.textAlign = "center";
+            // ctx.fillStyle = "black";
+            // ctx.font = "100px Arial";
+            // ctx.fillText("Front", BAG_WIDTH / 2 + 100, BAG_HEIGHT + 250);
+            //
+            // const backImg = new Image();
+            // backImg.src = backImgStr;
+            //
+            // backImg.onload = () => {
+            //     ctx?.drawImage(backImg, BAG_WIDTH + 200, 100, BAG_WIDTH, BAG_HEIGHT);
+            //     ctx.fillText("Back", BAG_WIDTH * 1.5 + 200, BAG_HEIGHT + 250)
+            //     resolve(canvas.toDataURL("image/png"));
+            // }
         }
     });
 }
@@ -55,30 +61,21 @@ export function BagDisplay(props: BagDisplayProps) {
 
     useEffect(() => {
         setLoading(true);
-        props.printGenerator.generatePrint(props.printOptions).then((printImg: string) => {
-            generateRender(printImg).then((renderedImg: string) => {
-                setPreviewImage(renderedImg);
-                setLoading(false);
+        props.printGenerator.generatePrint(props.printOptions, true).then((frontImg: string) => {
+            props.printGenerator.generatePrint(props.printOptions, false).then((backImg: string) => {
+                generateRender(frontImg, backImg).then((renderedImg: string) => {
+                    setPreviewImage(renderedImg);
+                    setLoading(false);
+                });
             });
         });
     }, [props.printOptions]);
 
-    function onImageClicked(event: React.MouseEvent<HTMLImageElement, MouseEvent>) {
-        const rect = event.currentTarget.getBoundingClientRect();
-        let adjustedLeft = (left / imgWidth) * rect.width;
-        let adjustedTop = (top / imgHeight) * rect.height;
-        const x = (event.clientX - rect.left - adjustedLeft) / ((rect.width / imgWidth) * width);
-        const y = (event.clientY - rect.top - adjustedTop) / ((rect.height / imgHeight) * height);
-
-        if (x > 0 && x < width && y > 0 && y < height) {
-            props.onClick(x, y);
-        }
-    }
 
     return previewImage ? (
         <div className={"relative"}>
             <div className={loading ? "opacity-50" : ""}>
-                <img src={previewImage} className={props.className} alt="Bag Preview" onClick={onImageClicked}/>
+                <img src={previewImage} className={props.className} alt="Bag Preview"/>
             </div>
             {loading ?
                 <div role="status" className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">

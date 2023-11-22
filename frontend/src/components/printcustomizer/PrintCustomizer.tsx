@@ -11,6 +11,7 @@ import {IconTypes, LocationPicker} from "./LocationPicker";
 import {Modal} from "../common/Modal";
 import {ConfirmLocation} from "./ConfirmLocation";
 import {getPrintId} from "../ordermanagment/OrderDisplay";
+import {Toggle} from "../common/Toggle";
 
 export interface CoordsBounds {
     tl_lat: number;
@@ -53,17 +54,15 @@ async function confirmLocation(props: PrintCustomizerProps): Promise<boolean> {
         "color_b": props.printOptions.color_b,
         "gradient": props.printOptions.gradient,
         "secondary": props.printOptions.secondary,
-        "locationIcon": props.printOptions.locationIcon,
-        "locationColor": props.printOptions.locationColor,
-        "location_x": props.printOptions.location ? props.printOptions.location[0] : null,
-        "location_y": props.printOptions.location ? props.printOptions.location[1] : null,
+        "text": props.printOptions.text,
+        "coordinates": props.printOptions.coordinates
     }
 
     let query: string = Object.keys(params).map((key) => {
         return encodeURIComponent(key) + '=' + encodeURIComponent(String((params as any)[key]))
     }).join('&');
 
-    let url = "https://vj00e2kyw2.execute-api.us-east-1.amazonaws.com/dev/saveOrder" + "?" + query;
+    let url = "https://8sbys0hxkb.execute-api.us-east-1.amazonaws.com/dev/saveOrder" + "?" + query;
 
     let response = await fetch(url, {
         method: 'POST',
@@ -75,7 +74,7 @@ async function confirmLocation(props: PrintCustomizerProps): Promise<boolean> {
     if (response.status === 200) {
         return true;
     }
-    console.log(response);
+
     return false;
 }
 
@@ -86,6 +85,12 @@ export function PrintCustomizer(props: PrintCustomizerProps) {
 
     function done() {
         props.exit(false);
+    }
+
+    function updateCenter() {
+        const center: [number, number] = [(props.coordsbounds.tl_lon + props.coordsbounds.tr_lon + props.coordsbounds.bl_lon + props.coordsbounds.br_lon) / 4,
+            (props.coordsbounds.tl_lat + props.coordsbounds.tr_lat + props.coordsbounds.bl_lat + props.coordsbounds.br_lat) / 4]
+        updatePrintOptions({center: center})
     }
 
     function updatePrintOptions(newOptions: Partial<PrintOptions>) {
@@ -108,83 +113,82 @@ export function PrintCustomizer(props: PrintCustomizerProps) {
         updatePrintOptions({gradient: event.target.checked});
     }
 
-    function onLocationColorChange(color: ColorResult, event: React.ChangeEvent<HTMLInputElement>) {
-        updatePrintOptions({locationColor: color.hex});
-    }
-
-    function enterLocationPickerMode(icon: IconTypes) {
-        setLocationPickerMode(true);
-        updatePrintOptions({location: undefined})
-        updatePrintOptions({locationIcon: icon})
-        firstClick = true;
-    }
-
-    function imageClicked(x: number, y: number) {
-        if (locationPickerMode) {
-            updatePrintOptions({location: [x, y]});
-            setLocationPickerMode(false);
-        }
-    }
-
 
     const colors = ['#FFFFFF', '#A0A0A0', '#FF6900', '#FCB900', '#7BDCB5', '#00D084',
         '#8ED1FC', '#0693E3', '#EB144C', '#F78DA7', '#9900EF', '#FF0000', '#00FF00', '#0000FF',
         '#FF00FF', '#FFFF00', '#00FFFF', '#FF4500']
 
-    let disabledClassName = locationPickerMode ? "opacity-10 pointer-events auto [&>*]:pointer-events-none" : "";
+    let printId = getPrintId();
 
-    let orderId = getPrintId();
+    useEffect(() => {
+        updateCenter();
+    }, [props.coordsbounds]);
 
     return (
         <div className={`w-full h-full flex flex-col ${props.className}`}>
             {donePickingLocation ?
-                <ConfirmLocation locationConfirmed={() => {return confirmLocation(props)}} cancel={() => {
+                <ConfirmLocation locationConfirmed={() => {
+                    return confirmLocation(props)
+                }} cancel={() => {
                     setDonePickingLocation(false)
                 }}/>
                 : null}
             <div className="flex-grow flex justify-center items-center">
                 <BagDisplay
-                    onClick={imageClicked}
                     printGenerator={props.printGenerator}
                     printOptions={props.printOptions}
                     className="max-h-96 max-w-96"/>
             </div>
-            <MaterialContainer
-                className={`max-h-[65%] relative`}
-                onClick={() => {
-                    firstClick ? firstClick = false : setLocationPickerMode(false)
-                }}>
-                {locationPickerMode ? <div
-                    className="absolute inset-0 flex items-center justify-center text-white text-lg font-bold z-20">Click
-                    anywhere on map to mark location</div> : null}
-                <div className={`flex flex-col space-y-6  ${disabledClassName}`}>
-                    <div className="flex flex-row overflow-scroll w-full">
-                        <ColorSelection
-                            className={`flex-grow`}
-                            colorA={props.printOptions.color_a}
-                            colorB={props.printOptions.color_b}
-                            secondary={props.printOptions.secondary}
-                            gradient={props.printOptions.gradient}
-                            colors={colors}
-                            onColorAChange={onColorAChange}
-                            onColorBChange={onColorBChange}
-                            onSecondaryToggle={onSecondaryToggle}
-                            onGradientToggle={onGradientToggle}
-                        />
-                        <LocationPicker
-                            className={"flex-grow"}
-                            setLocation={enterLocationPickerMode}
-                            setColor={onLocationColorChange}
-                            locationColor={props.printOptions.locationColor}
-                            clearLocation={() => {
-                                updatePrintOptions({location: undefined})
-                            }}
-                        />
+            <MaterialContainer className={`max-h-[65%] relative`}>
+                <div className={`flex flex-col space-y-6 justify-around`}>
+                    <div className={'flex flex-col bg-gray-800 rounded-2xl space-y-6 p-6'}>
+                        <div className="flex flex-row w-full justify-around items-center flex-wrap">
+                            {/*<ColorSelection*/}
+                            {/*    className={`flex-grow`}*/}
+                            {/*    colorA={props.printOptions.color_a}*/}
+                            {/*    colorB={props.printOptions.color_b}*/}
+                            {/*    secondary={props.printOptions.secondary}*/}
+                            {/*    gradient={props.printOptions.gradient}*/}
+                            {/*    colors={colors}*/}
+                            {/*    onColorAChange={onColorAChange}*/}
+                            {/*    onColorBChange={onColorBChange}*/}
+                            {/*    onSecondaryToggle={onSecondaryToggle}*/}
+                            {/*    onGradientToggle={onGradientToggle}*/}
+                            {/*/>*/}
+                            <LabeledColorPicker label={"Primary"} color={props.printOptions.color_a} colors={colors}
+                                                onChangeComplete={onColorAChange}/>
+                            <LabeledColorPicker label={"Secondary"} color={props.printOptions.color_b} colors={colors}
+                                                onChangeComplete={onColorBChange}/>
+                            <Toggle label={"Gradient"} checked={props.printOptions.gradient}
+                                    onChange={onGradientToggle}/>
+                        </div>
+
+                        <div className={'flex flex-row w-full justify-around items-center'}>
+                            <p className={'text-white mr-2'}>Label (optional):</p>
+                            <input type={"text"}
+                                   value={props.printOptions.text ? props.printOptions.text : ""}
+                                   placeholder={"Mount Washington"}
+                                   onChange={(event: ChangeEvent<HTMLInputElement>) => updatePrintOptions({text: event.target.value})}
+                                   maxLength={18}
+                                   className={"bg-gray-700 rounded-md p-2 text-white flex-grow focus:outline-none focus:border-pink-600 focus:ring-1 focus:ring-pink-600"}
+                            />
+                        </div>
+                        <div className={'flex flex-row w-full justify-around items-center'}>
+                            <Toggle label={"Show Coordinates"}
+                                    checked={props.printOptions.coordinates}
+                                    onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                                        updatePrintOptions({coordinates: event.target.checked})
+                                        updateCenter();
+                                    }}
+                            />
+                        </div>
+
 
                     </div>
+
                     <div className="flex flex-row space-x-6 justify-between">
                         <SelectorButton className="flex-grow" handler={done}>BACK</SelectorButton>
-                        <SelectorButton className="flex-grow" disabled={orderId === ""} handler={() => {
+                        <SelectorButton className="flex-grow" disabled={printId === ""} handler={() => {
                             setDonePickingLocation(true);
                         }}>Confirm</SelectorButton>
                     </div>

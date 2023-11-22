@@ -95,11 +95,11 @@ export function MapSelector(props: MapSelectorProps) {
             <div className="z-1 absolute top-0 left-0 w-full h-full flex flex-col items-center justify-center pointer-events-none">
 
                 <div className="flex-grow flex w-9/12 md:w-1/3 items-center justify-center pointer-events-none">
-                    <div ref={box} className={`w-full aspect-bag_ratio border-4 rounded-[3rem] shadow-gray-800 shadow-mega border-pink-600`}/>
+                    <div ref={box} className={`w-full aspect-bag_ratio border-4 rounded-[3rem] m-4 shadow-gray-800 shadow-mega border-pink-600`}/>
                 </div>
 
                 <MaterialContainer className={"h-auto flex flex-col space-y-4 pointer-events-auto"}>
-                    <p className="text-white text-center">Move map to select region to be printed on your fanny pack.</p>
+                    <p className="text-white text-center">Move map to select region to be printed on your dry bag.</p>
                     <SelectorButton className="max-w-96" handler={returnCoords} disabled={props.isLoading}>SELECT REGION</SelectorButton>
                 </MaterialContainer>
             </div>

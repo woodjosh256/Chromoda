@@ -1,1 +1,2 @@
-export const BAG_WIDTH = 850, BAG_HEIGHT = 1100;
+export const SHITTY_SCALE = 1;
+export const BAG_WIDTH = 850 * SHITTY_SCALE, BAG_HEIGHT = 1100 * SHITTY_SCALE;

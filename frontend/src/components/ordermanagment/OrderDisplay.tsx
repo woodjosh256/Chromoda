@@ -12,7 +12,8 @@ interface OrderDisplayProps {
 export const getPrintId = (): string => {
     const path = window.location.pathname;
 
-    return path.substring(path.lastIndexOf('/') + 1);
+    const printId =  path.substring(path.lastIndexOf('/') + 1);
+    return printId;
 };
 
 async function getOrderState() {
@@ -30,7 +31,7 @@ async function getOrderState() {
         return encodeURIComponent(key) + '=' + encodeURIComponent(String((params as any)[key]))
     }).join('&');
 
-    let url = "https://vj00e2kyw2.execute-api.us-east-1.amazonaws.com/dev/checkOrderState" + "?" + query;
+    let url = "https://8sbys0hxkb.execute-api.us-east-1.amazonaws.com/dev/checkOrderState" + "?" + query;
 
     return fetch(url, {
         method: 'GET',
@@ -89,7 +90,7 @@ export default function OrderDisplay(props: OrderDisplayProps) {
                             </div>
                             : orderState == "open" ?
                                 <div className={"flex flex-col space-y-4"}>
-                                    <p>This is the order form for your custom fanny pack. Here you can test out multiple
+                                    <p>This is the order form for your custom dry bag. Here you can test out multiple
                                         designs, then confirm your order.</p>
                                     <div className={"flex flex-row justify-center items-center"}>
                                         <SelectorButton handler={props.done}>GET STARTED</SelectorButton>

@@ -5,7 +5,6 @@ import {BAG_WIDTH} from "./constants";
 import {PrintGenerator, PrintOptions} from "./utils/PrintGenerator";
 import {IconTypes} from "./components/printcustomizer/LocationPicker";
 import OrderDisplay from "./components/ordermanagment/OrderDisplay";
-import {InternalOrderPrinter} from "./utils/InternalOrderPrinter";
 import {LoadingCircle} from "./components/common/LoadingCircle";
 import {Modal} from "./components/common/Modal";
 
@@ -37,7 +36,7 @@ export default function App() {
             return encodeURIComponent(key) + '=' + encodeURIComponent(String((params as any)[key]))
         }).join('&');
 
-        let url = "https://vj00e2kyw2.execute-api.us-east-1.amazonaws.com/dev/generateTopo" + "?" + query;
+        let url = "https://8sbys0hxkb.execute-api.us-east-1.amazonaws.com/dev/generateTopo" + "?" + query;
 
         return fetch(url, {
             method: 'GET',
@@ -94,8 +93,8 @@ export default function App() {
             color_b: "#0000FF",
             gradient: false,
             secondary: true,
-            locationColor: "#FFFFFF",
-            locationIcon: IconTypes.Heart,
+            text: null,
+            coordinates: false
         })
     }, []);
 
