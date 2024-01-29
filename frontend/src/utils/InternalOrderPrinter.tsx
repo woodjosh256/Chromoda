@@ -1,6 +1,8 @@
-import React, {useRef} from "react";
+import React, {useEffect, useRef} from "react";
 import {BAG_HEIGHT, BAG_WIDTH} from "../constants";
 import {PrintGenerator, PrintOptions} from "./PrintGenerator";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 export const InternalOrderPrinter = () => {
     let print_input = useRef<HTMLInputElement | null>(null);
@@ -78,10 +80,40 @@ export const InternalOrderPrinter = () => {
     };
 
 
-    function submitPrint() {
-        if (print_input.current && print_input.current.value !== '') {
-            console.log("Requesting print " + print_input.current.value + "...");
-            let print_id = print_input.current.value;
+    const createPdfAndPrint = async () => {
+        const pdf = new jsPDF({
+            orientation: 'landscape',
+            unit: 'in',
+            format: 'letter'
+        });
+
+        // @ts-ignore
+        const addImageToPDF = async (imgRef, pageNumber) => {
+            const canvas = await html2canvas(imgRef.current);
+            const imgData = canvas.toDataURL('image/png');
+
+            // Margins and dimensions (8.5x11 inches page with 0.25 inch margin)
+            const margin = 0.125;
+            const width = Math.round(BAG_WIDTH / 140);
+            const height = Math.round(BAG_HEIGHT / 140);
+
+            if (pageNumber > 1) pdf.addPage();
+            pdf.addImage(imgData, 'PNG', margin, margin, width, height);
+        };
+
+        await addImageToPDF(myImg, 1);
+
+        // Save PDF or open it in a new window
+        // pdf.save('document.pdf'); // To save the PDF
+        const pdfURL = pdf.output('bloburl');
+        window.open(pdfURL);
+    };
+
+
+
+    function submitPrint(print_id: string) {
+        console.log("Requesting print " + print_id + "...");
+        try {
             fetch("https://vj00e2kyw2.execute-api.us-east-1.amazonaws.com/dev/getOrder?print_id=" + print_id)
                 .then(response => response.json())
                 .then(data => {
@@ -112,25 +144,29 @@ export const InternalOrderPrinter = () => {
                                         if (myImg.current) {
                                             myImg.current.src = print;
                                         }
-                                    })
+                                    }).then(() => createPdfAndPrint())
                             })
                             })
                 .catch(error => {
                     console.log(error);
                 });
-        } else {
-            alert("No order ID entered.")
-        }
+            } catch (error) {
+                console.log(error);
+            }
+
     }
+
+    useEffect(() => {
+
+        const order_id = window.location.pathname.substring(1);
+
+        submitPrint(order_id);
+    }, []);
 
     return (
         <div>
-            <h1>Internal Print Printer</h1>
-            <label className={''}>Print ID</label>
-            <input className='border-solid border-2 border-black mx-2' type="text" ref={print_input}/>
-            <button className='border-solid border-2 border-black px-2' type="submit" onClick={submitPrint}>Submit
-            </button>
-            <img ref={myImg} className={"cursor-pointer"}/>
+            <h1>Loading...</h1>
+            <img ref={myImg} src="" alt="Print"/>
         </div>
     );
 }
