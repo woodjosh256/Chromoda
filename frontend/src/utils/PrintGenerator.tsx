@@ -74,6 +74,9 @@ export class PrintGenerator {
         let scalingFactor = 2;
         let iconScale = this.scale;
 
+        const updatedWidth = 8.625;
+        const updatedHeight = 6.375;
+
         return new Promise((resolve, reject) => {
             const canvas = document.createElement("canvas");
             canvas.width = width * scalingFactor; // Higher resolution
@@ -127,13 +130,50 @@ export class PrintGenerator {
                         ctx.fillRect(0, 0, width * scalingFactor, height * scalingFactor);
                     }
 
+                    ctx.globalCompositeOperation = "source-over";
+
                     if (printOptions.location) {
-                        ctx.globalCompositeOperation = "source-over";
                         const w = 100 * scalingFactor * iconScale
                         const h = w;
                         ctx.drawImage(locImg, printOptions.location[0] * canvas.width - w / 2,
                             printOptions.location[1] * canvas.height - h / 2, w, h);
                     }
+
+                    // const realAspectRatio = updatedWidth / updatedHeight;
+                    // const canvasAspectRatio = canvas.width / canvas.height;
+                    // const percent_wider = canvasAspectRatio / realAspectRatio;
+                    // // canvas has a wider aspect ratio than the bag. Need to add white bars to the left and right side of canvas
+                    const whiteBarWidth = canvas.width * 0.0425;
+                    ctx.fillStyle = 'white';
+                    ctx.fillRect(0, 0, whiteBarWidth, canvas.height);
+                    ctx.fillRect(canvas.width - whiteBarWidth, 0, whiteBarWidth, canvas.height);
+
+                    // draw red bezier curves at each corner, starting 1/4 of the canvas width from each corner
+                    ctx.fillStyle = 'red';
+                    const radius = canvas.width / 8;
+                    ctx.beginPath();
+                    ctx.moveTo(whiteBarWidth, radius);
+                    ctx.bezierCurveTo(whiteBarWidth, radius / 2, whiteBarWidth + radius / 2, 0, whiteBarWidth + radius, 0);
+                    ctx.moveTo(canvas.width - whiteBarWidth, radius);
+                    ctx.bezierCurveTo(canvas.width - whiteBarWidth, radius / 2, canvas.width - whiteBarWidth - radius / 2, 0, canvas.width - whiteBarWidth - radius, 0);
+                    ctx.moveTo(whiteBarWidth, canvas.height - radius);
+                    ctx.bezierCurveTo(whiteBarWidth, canvas.height - radius / 2, whiteBarWidth + radius / 2, canvas.height, whiteBarWidth + radius, canvas.height);
+                    ctx.moveTo(canvas.width - whiteBarWidth, canvas.height - radius);
+                    ctx.bezierCurveTo(canvas.width - whiteBarWidth, canvas.height - radius / 2, canvas.width - whiteBarWidth - radius / 2, canvas.height, canvas.width - whiteBarWidth - radius, canvas.height);
+
+
+                    // ctx.moveTo(canvas.width - whiteBarWidth, radius);
+                    // ctx.bezierCurveTo(canvas.width - whiteBarWidth, radius, canvas.width - whiteBarWidth, 0, canvas.width - whiteBarWidth - radius, 0);
+                    // ctx.moveTo(whiteBarWidth, canvas.height - radius);
+                    // ctx.bezierCurveTo(whiteBarWidth, canvas.height - radius, whiteBarWidth, canvas.height, whiteBarWidth + radius, canvas.height);
+                    // ctx.moveTo(canvas.width - whiteBarWidth, canvas.height - radius);
+                    // ctx.bezierCurveTo(canvas.width - whiteBarWidth, canvas.height - radius, canvas.width - whiteBarWidth, canvas.height, canvas.width - whiteBarWidth - radius, canvas.height);
+
+
+                    // stroke with red that's 8 px wide
+                    ctx.lineWidth = 12;
+                    ctx.strokeStyle = 'white';
+                    ctx.stroke();
 
                     // Downscale if needed
                     if (scalingFactor !== 1) {
